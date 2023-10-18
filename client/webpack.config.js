@@ -24,6 +24,24 @@ module.exports = () => {
         title: "Client Server",
         template: "./index.html",
       }),
+      new WebpackPwaManifest({
+        name: "JATE Manifest",
+        short_name: "Manifest",
+        description: "Keep track of important tasks!",
+        background_color: "#7eb4e2",
+        theme_color: "#7eb4e2",
+        start_url: "/",
+        publicPath: "/",
+        fingerprints: false, // set to false to prevent hashing
+        icons: [
+          {
+            src: path.resolve("src/images/logo.png"),
+            sizes: [96, 128, 192, 256, 384, 512],
+            // purpose: "any maskable",
+            destination: path.join("assets", "icons"),
+          },
+        ],
+      }),
       new MiniCssExtractPlugin(),
       new WorkboxPlugin.GenerateSW(),
     ],
@@ -31,20 +49,20 @@ module.exports = () => {
     module: {
       rules: [
         {
-          test: /\.css$/,
-          use: [MiniCssExtractPlugin.loader, "css-loader"],
-        },
-        {
-          test: /\.(png|svg|jpg|jpeg|gif)$/i,
-          type: "asset/resource",
+          test: /\.css$/i,
+          use: ["style-loader", "css-loader"],
         },
         {
           test: /\.m?js$/,
-          exclude: /(node_modules|bower_components)/,
+          exclude: /node_modules/,
           use: {
             loader: "babel-loader",
             options: {
               presets: ["@babel/preset-env"],
+              plugins: [
+                "@babel/plugin-proposal-object-rest-spread",
+                "@babel/transform-runtime",
+              ],
             },
           },
         },
